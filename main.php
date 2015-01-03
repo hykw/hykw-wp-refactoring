@@ -21,11 +21,11 @@ class hykwRefact
   # enable/disable メソッドで有効/無効にする機能の名前
   const FUNC_LOGGING = 'log';   # syslogへの出力
 
-  private $dir_data;
-  private $queryStringKey;
-  private $enabled_all;
-  private $enabled_funcs;
-  private $accessCheck_functionName;
+  private $dir_data;  # データ保存ディレクトリ
+  private $queryStringKey;  # コマンドのキー(default: 'TEST')
+  private $enabled_all;     # 全機能を disable にするなら FALSE
+  private $enabled_funcs;   # 機能別の enable/disable(1ならenable, 0ならdisable)
+  private $accessCheck_functionName;  # アクセス可否をチェックする関数名(リターン値がTRUEならアクセス許可)
 
   /**
    * __construct 
@@ -92,11 +92,12 @@ class hykwRefact
 
     $cmd = $qs[$this->queryStringKey];
 
-    # TEST部分を除いたQueryStringを付与
-    $url = sprintf('%s%s%s', $fqdn, $path, 
+    # TEST部分を除いたQueryStringを末尾に追加
+    $url = sprintf('%s%s%s', $fqdn, $path,
       $this->getQueryStringExcluded($qs, $this->queryStringKey));
 
     $saveLoadFilename = $this->getReadWriteFileName($url, $key_appended);
+
     switch($cmd) {
     case self::CMD_SAVE:
       $ret = $this->saveData($saveLoadFilename, $args);
@@ -331,12 +332,12 @@ EOL;
       $log .= sprintf('%s%s %s', $url, $key_appended, $msg);
       break;
     }
-     
+
     syslog(LOG_INFO, $log);
   }
 
   /**
-   * enable 機能の有効/無効設定
+   * enable 指定機能の有効/無効設定
    * 
    * @param mixed $funcName 有効/無効にする機能の名前（空なら全機能が対象）
    */
@@ -360,6 +361,13 @@ EOL;
     $this->enabled_funcs[$funcName] = 0;
   }
 
+  /**
+   * registerAccessCheck アクセス可否を問い合わせる関数名を登録
+   * 
+   * FIXME: 無名関数版も作るべき？
+   * 
+   * @param string $funcName 関数名
+   */
   public function registerAccessCheck($funcName)
   {
     $this->accessCheck_functionName = $funcName;
