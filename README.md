@@ -50,3 +50,17 @@ http://example.jp/archives/12345?TEST=save
 http://example.jp/category/01/03?TEST=assert
 ```
 
+## 【依存プラグイン】
+内部で hykw-wpdata(https://github.com/hykw/hykw-wpdata)を利用しています。
+
+## その他機能
+### 個別/全機能のenable/disable
+
+enable/disable メソッドを呼び出すことで、機能のon/offが可能です（引数省略で全機能が対象）
+
+```php
+$gobj->enable();
+$gobj->disable();         // 全機能を無効にする（= 何もしない）
+$gobj->disable('log');    // syslogに実行結果を出力しない(default: enable)
+```
+
