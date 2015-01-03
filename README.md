@@ -64,3 +64,16 @@ $gobj->disable();         // 全機能を無効にする（= 何もしない）
 $gobj->disable('log');    // syslogに実行結果を出力しない(default: enable)
 ```
 
+### アクセス制限の追加
+
+registerAccessCheck()メソッドに関数を登録すると、各機能を呼び出したときにその関数を実行し、TRUEを返したときのみ処理を続行します。設定する関数では、IPアドレスチェック／ログイン確認などをするといいかと思います。
+
+```php
+function foo()
+{
+  return TRUE;
+}
+$gobj->registerAccessCheck('foo');
+
+```
+

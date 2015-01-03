@@ -2,7 +2,7 @@
   /**
    * @package HYKW Refactoring Plugin
    * @use hykwWPData_url
-   * @version 1.1.0
+   * @version 1.2.0
    */
   /*
     Plugin Name: HYKW Refactoring Plugin
@@ -25,6 +25,7 @@ class hykwRefact
   private $queryStringKey;
   private $enabled_all;
   private $enabled_funcs;
+  private $accessCheck_functionName;
 
   /**
    * __construct 
@@ -51,6 +52,7 @@ class hykwRefact
     $this->enabled_funcs = Array(
       self::FUNC_LOGGING => 1,
     );
+    $this->accessCheck_functionName = FALSE;
   }
 
   /**
@@ -71,6 +73,11 @@ class hykwRefact
   {
     if ($this->enabled_all == FALSE)
       return TRUE;
+
+    if ($this->accessCheck_functionName != FALSE) {
+      if (call_user_func($this->accessCheck_functionName) == FALSE)
+        return TRUE;
+    }
 
     $fqdn = get_site_url();
     $path = hykwWPData_url::get_requestURL(FALSE);
@@ -351,6 +358,11 @@ EOL;
     }
 
     $this->enabled_funcs[$funcName] = 0;
+  }
+
+  public function registerAccessCheck($funcName)
+  {
+    $this->accessCheck_functionName = $funcName;
   }
 
 
