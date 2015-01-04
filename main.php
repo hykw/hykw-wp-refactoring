@@ -175,7 +175,7 @@ class hykwRefact
    */
   private function getReadWriteFileName($url, $key_appended)
   {
-    $filename_ingredient = $url . $key_appended;
+    $filename_ingredient = $url . __FILE__ . $key_appended;
 
     $ret = sprintf('%s/%s', $this->dir_data, sha1($filename_ingredient));
     return $ret;
