@@ -163,7 +163,8 @@ class hykwRefact
       unlink($fileInfo->getPathname());
     }
 
-    return TRUE;
+    $ret = rmdir($this->dir_data);
+    return $ret;
   }
 
   /**
