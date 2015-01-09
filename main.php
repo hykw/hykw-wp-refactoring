@@ -245,29 +245,30 @@ class hykwRefact
 EOL;
 
     # array以外は単に出力して終わりにしちゃう
-    if (gettype($argsCompared) != 'array') {
+    switch (gettype($argsCompared)) {
+    case 'string':
+      $argsCompared = explode("\n", $argsCompared);
+      $savedArgs = explode("\n", $savedArgs);
+      break;
+
+    case 'array':
+      # 
+      break;
+
+    default:
       echo "expected:\n";
       echo htmlspecialchars($argsCompared) . "\n\n";
 
       echo "saved value:\n";
       echo htmlspecialchars($savedArgs);
-
       return FALSE;
     }
 
+    // 連想配列じゃなくて、単なる配列の場合、詰め替える
+    list($argsCompared, $savedArgs) = $this->_checkAndAdjustArrays($argsCompared, $savedArgs);
+
     $retFlag = TRUE;
     foreach ($argsCompared as $key => $value) {
-      // 連想配列じゃなくて、単なる配列の場合。いったん、単に出力するだけにする
-      if ($key == '') {
-        echo "expected:\n";
-        echo print_r($argsCompared) . "\n\n";
-
-        echo "saved value:\n";
-        echo print_r($savedArgs);
-
-        return FALSE;
-      }
-
       if ($value != $savedArgs[$key]) {
         $retFlag = FALSE;
 
@@ -374,7 +375,36 @@ EOL;
     $this->accessCheck_functionName = $funcName;
   }
 
+  /**
+   * _checkAndAdjustArrays 連想配列じゃない普通の配列の場合、連想配列にしちゃう
+   * 
+   * @param array $argsCompared 
+   * @param array $savedArgs 
+   * @return array ['0' => value1, '1' => value2, ...]
+   */
+  private function _checkAndAdjustArrays($argsCompared, $savedArgs)
+  {
+    # 連想配列？
+    foreach ($argsCompared as $key => $value)
+    {
+      if ($key != '')
+        return array($argsCompared, $savedArgs);
 
+      break;
+    }
+
+    $ret_compared = array();
+    $ret_saved = array();
+    for ($i = 0; $i < count($argsCompared); $i++) {
+      $ret_compared[(string)$i] = $argsCompared[$i];
+    }
+    for ($i = 0; $i < count($savedArgs); $i++) {
+      $ret_saved[(string)$i] = $savedArgs[$i];
+    }
+
+    return array($argsCompared, $savedArgs);
+  }
 }
+
 
 
