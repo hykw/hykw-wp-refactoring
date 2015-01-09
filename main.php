@@ -244,14 +244,10 @@ class hykwRefact
 
 EOL;
 
-    # array以外は単に出力して終わりにしちゃう
+    # array以外
     if (gettype($argsCompared) != 'array') {
-      echo "expected:\n";
-      echo htmlspecialchars($argsCompared) . "\n\n";
-
-      echo "saved value:\n";
-      echo htmlspecialchars($savedArgs);
-
+      $diff = $this->getDiffString(htmlspecialchars($argsCompared), htmlspecialchars($savedArgs));
+      echo $diff;
       return FALSE;
     }
 
