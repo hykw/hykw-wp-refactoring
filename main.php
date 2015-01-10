@@ -1,13 +1,9 @@
 <?php
-  /**
-   * @package HYKW Refactoring Plugin
-   * @use hykwWPData_url
-   * @version 1.2.0
-   */
   /*
     Plugin Name: HYKW Refactoring Plugin
     Plugin URI: https://github.com/hykw/hykw-wp-refactoring
     Description: リファクタリング支援プラグイン
+    version: 1.2.0
     Author: Hitoshi Hayakawa
   */
 
